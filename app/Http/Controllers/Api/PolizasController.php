@@ -4,9 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\PolizaRequest;
 use App\Models\Polizas;
-use App\Services\FileStorageFactory;
+use App\Services\FileStorageStrategies\PolizasStorageStrategy;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PolizasController extends Controller
 {
@@ -22,16 +23,14 @@ class PolizasController extends Controller
 
         if ($request->hasFile('poliza_adjunta')) {
             $file = $request->file('poliza_adjunta');
-            $filename = $file->getClientOriginalName();
-
-            $path = FileStorageFactory::create('poliza');
-            $file->move($path, $filename);
-
+            $disk = new PolizasStorageStrategy();
+            $file->move($disk->getPath(), $file->hashName());
+            $poliza->poliza_adjunta = $file->hashName();
             $poliza->save();
 
             return response()->json([
                 'message' => 'Poliza creada con éxito',
-                'poliza' => $poliza
+                'polizas' => $poliza
             ], 201);
         }
 
@@ -51,43 +50,40 @@ class PolizasController extends Controller
         }
     }
 
-    public function update(PolizaRequest $request, $id)
+    public function update(PolizaRequest $request, $id): JsonResponse
     {
         $poliza = Polizas::query()->find($id);
 
-
-        if ($poliza) {
-            $poliza->numero_poliza = $request->get('numero_poliza');
-            $poliza->fecha_inicio = $request->get('fecha_inicio');
-            $poliza->fecha_fin = $request->get('fecha_fin');
-            $poliza->aseguradora = $request->get('aseguradora');
-            $poliza->telefono_aseguradora = $request->get('telefono_aseguradora');
-            $poliza->telefono_broker = $request->get('telefono_broker');
-            $poliza->cronograma_pago = $request->get('cronograma_pago');
-            $poliza->poliza_adjunta = $request->get('poliza_adjunta');
-            $poliza->tipo_poliza = $request->get('tipo_poliza');
-            $poliza->estado_poliza = $request->get('estado_poliza');
+        if ($poliza && $request->hasFile('poliza_adjunta')) {
+            $file = $request->file('poliza_adjunta');
+            $disk = new PolizasStorageStrategy();
+            $file->move($disk->getPath(), $file->hashName());
+            $poliza->poliza_adjunta = $file->hashName();
             $poliza->save();
 
+            dump($poliza);
+
             return response()->json([
-                'message' => 'Póliza actualizada con éxito',
-                'poliza' => $poliza
+                'message' => 'Poliza creada con éxito',
+                'polizas' => $poliza
             ], 200);
-        } else {
-            return response()->json(['error' => 'Póliza no encontrada'], 404);
         }
+
+        return response()->json([
+            'message' => 'El archivo de la póliza es requerido'
+        ], 400);
     }
 
-    public function destroy($id)
+    public function destroy($id): JsonResponse
     {
-        $poliza = Polizas::find($id);
+        $poliza = Polizas::query()->find($id);
 
         if ($poliza) {
             $poliza->delete();
 
             return response()->json([
                 'message' => 'Póliza eliminada con éxito'
-            ], 200);
+            ], 204);
         } else {
             return response()->json(['error' => 'Póliza no encontrada'], 404);
         }

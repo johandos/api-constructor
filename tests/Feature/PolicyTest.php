@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Polizas;
+use App\Services\FileStorageStrategies\PolizasStorageStrategy;
 use Database\Seeders\PolizasSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -13,18 +14,14 @@ use Tests\TestCase;
 
 class PolicyTest extends TestCase
 {
-    use RefreshDatabase, WithFaker;
+    use WithFaker;
 
     public function test_can_create_policy()
     {
         // Finge el disco de almacenamiento para las subidas de archivos
         Storage::fake('public');
-
-
         // Crea un archivo falso
         $file = UploadedFile::fake()->create('document.pdf', 500, 'application/pdf');
-
-
         $data = [
             'numero_poliza' => 'NP-486275',
             'fecha_inicio' => '2023-01-01',
@@ -40,24 +37,11 @@ class PolicyTest extends TestCase
 
         $response = $this->post('/api/polizas', $data);
         // Comprueba que el archivo se haya cargado en el disco 'public'.
-        Storage::disk('public')->assertExists($file->hashName());
+        Storage::disk('public')->assertExists("polizas/{$file->hashName()}");
         $response->assertStatus(201);
+
+        $data['poliza_adjunta'] = $file->hashName();
         $this->assertDatabaseHas(Polizas::class, $data);
-    }
-
-
-    public function test_save_file_in_storage()
-    {
-        $data = [
-            'numero_poliza' => 12345,
-            'poliza_adjunta' => 'policy.pdf',
-        ];
-
-        // Realiza la petición a la ruta que llama al método store del controlador
-        $response = $this->post('/api/polizas', $data);
-
-
-        $response->assertStatus(200);
     }
 
     public function test_poliza_creation_fails_with_invalid_data()
@@ -68,7 +52,7 @@ class PolicyTest extends TestCase
         ];
 
         // Realiza la petición a la ruta que llama al método store del controlador
-        $response = $this->post('/api/polizas', $data);
+        $response = $this->post(route('polizas.store'), $data);
 
         // Comprueba que los errores de validación específicos están presentes en la respuesta
         $response->assertJsonValidationErrors([
@@ -89,14 +73,13 @@ class PolicyTest extends TestCase
             'numero_poliza' => 'NP-789605'
         ]);
 
-        // Crear un archivo falso para la prueba
+        // Crear un archivo fake para la prueba
         Storage::fake('public');
         $file = UploadedFile::fake()->create('document.pdf', 500, 'application/pdf');
 
-
         // Datos a actualizar
         $data = [
-            'numero_poliza' => 'NP-123456',
+            'numero_poliza' => 'NP-789605',
             'fecha_inicio' => '2023-01-01',
             'fecha_fin' => '2023-12-31',
             'aseguradora' => 'La Gran Aseguradora',
@@ -115,34 +98,35 @@ class PolicyTest extends TestCase
         $response->assertStatus(200);
 
         // Verificar que la póliza se actualizó en la base de datos
+        $data['poliza_adjunta'] = $file->hashName();
         $this->assertDatabaseHas('polizas', $data);
 
-        // Assert the file was stored...
-        Storage::disk('public')->assertExists($file->hashName());
+        // Comprueba que el archivo se haya cargado en el disco 'public/polizas'.
+        Storage::disk('public')->assertExists("polizas/{$file->hashName()}");
     }
 
     public function test_can_get_policy()
     {
-        $policy = Polizas::factory()->create();
+        $poliza = Polizas::factory()->create();
 
-        $response = $this->get('/policies/' . $policy->id);
+        $response = $this->get(route('polizas.show', $poliza->numero_poliza));
 
         $response->assertStatus(200)
             ->assertJson([
-                'policy_number' => $policy->policy_number,
-                'start_date' => $policy->start_date,
-                'end_date' => $policy->end_date,
-                'insurer' => $policy->insurer,
+                'numero_poliza' => $poliza->numero_poliza,
+                'fecha_inicio' => $poliza->fecha_inicio,
+                'fecha_fin' => $poliza->fecha_fin,
+                'aseguradora' => $poliza->aseguradora,
             ]);
     }
 
     public function test_can_delete_policy()
     {
-        $this->seed(PolizasSeeder::class);
+        $poliza = Polizas::factory()->create();
 
-        $response = $this->delete('/policies/' . 'NP-789605');
+        $response = $this->delete(route('polizas.destroy', $poliza->numero_poliza));
 
         $response->assertStatus(204);
-        $this->assertDatabaseMissing(Polizas::class, ['id' => 'NP-789605']);
+        $this->assertDatabaseMissing(Polizas::class, ['numero_poliza' => $poliza->numero_poliza]);
     }
 }

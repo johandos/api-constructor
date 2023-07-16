@@ -19,7 +19,7 @@ return new class extends Migration
                 ->onDelete('cascade')->onUpdate('cascade');
 
             $table->foreign('codigo_numero_poliza')
-                ->references('numero_poliza')->on('poliza')
+                ->references('numero_poliza')->on('polizas')
                 ->onDelete('cascade')->onUpdate('cascade');
         });
     }

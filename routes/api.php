@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\Api\EmpresaController;
 use App\Http\Controllers\Api\PolizasController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Api\UsuariosController;
+use App\Http\Controllers\Api\VehiculoController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,3 +18,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::apiResource('polizas', PolizasController::class);
+Route::apiResource('empresas', EmpresaController::class);
+Route::apiResource('usuarios', UsuariosController::class);
+Route::apiResource('vehiculos', VehiculoController::class);

@@ -54,17 +54,21 @@ class PolizasController extends Controller
     {
         $poliza = Polizas::query()->find($id);
 
-        if ($poliza && $request->hasFile('poliza_adjunta')) {
-            $file = $request->file('poliza_adjunta');
-            $disk = new PolizasStorageStrategy();
-            $file->move($disk->getPath(), $file->hashName());
-            $poliza->poliza_adjunta = $file->hashName();
-            $poliza->save();
+        if ($poliza) {
+            $poliza->update($request->validated());
 
-            dump($poliza);
+            if ($request->hasFile('poliza_adjunta')) {
+                $file = $request->file('poliza_adjunta');
+                $disk = new PolizasStorageStrategy();
+                $file->move($disk->getPath(), $file->hashName());
+                $poliza->poliza_adjunta = $file->hashName();
+                $poliza->save();
+            }
+
+            $poliza = Polizas::query()->find($request->get('numero_poliza'));
 
             return response()->json([
-                'message' => 'Poliza creada con éxito',
+                'message' => 'Poliza actualizada con éxito',
                 'polizas' => $poliza
             ], 200);
         }

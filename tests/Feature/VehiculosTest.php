@@ -12,9 +12,9 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 use Tests\TestCase;
 
-class PolicyTest extends TestCase
+class VehiculosTest extends TestCase
 {
-    use WithFaker;
+    use RefreshDatabase, WithFaker;
 
     public function test_can_create_policy()
     {

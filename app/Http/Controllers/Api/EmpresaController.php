@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\EmpresaRequest;
 use App\Models\Empresa;
-use App\Models\Polizas;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 
@@ -12,8 +11,8 @@ class EmpresaController extends Controller
 {
     public function index()
     {
-        $polizas = Polizas::all();
-        return response()->json($polizas, 200);
+        $empresa = Empresa::all();
+        return response()->json($empresa, 200);
     }
 
     public function store(EmpresaRequest $request): JsonResponse
@@ -36,14 +35,14 @@ class EmpresaController extends Controller
         }
     }
 
-    public function show($id): JsonResponse
+    public function show($ruc): JsonResponse
     {
-        $poliza = Polizas::query()->find($id);
+        $empresa = Empresa::query()->find($ruc);
 
-        if ($poliza) {
-            return response()->json($poliza, 200);
+        if ($empresa) {
+            return response()->json($empresa, 200);
         } else {
-            return response()->json(['error' => 'Póliza no encontrada'], 404);
+            return response()->json(['error' => 'Empresa no encontrada'], 404);
         }
     }
 
@@ -67,12 +66,13 @@ class EmpresaController extends Controller
         ], 400);
     }
 
-    public function destroy($id): JsonResponse
+    // TODO: revisar el eliminar empresa (si es posible hablarlo con el profesor)
+    /*public function destroy($id): JsonResponse
     {
-        $poliza = Empresa::query()->find($id);
+        $empresa = Empresa::query()->find($id);
 
-        if ($poliza) {
-            $poliza->delete();
+        if ($empresa) {
+            $empresa->delete();
 
             return response()->json([
                 'message' => 'Empresa eliminada con éxito'
@@ -80,5 +80,5 @@ class EmpresaController extends Controller
         } else {
             return response()->json(['error' => 'Empresa no encontrada'], 404);
         }
-    }
+    }*/
 }

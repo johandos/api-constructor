@@ -9,9 +9,11 @@ class Vehiculo extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'numero_poliza';
+    protected $table = 'vehiculo';
+    protected $primaryKey = 'placa';
     protected $keyType = 'string';
     public $incrementing = false;
+    public $timestamps = false;
 
     protected $fillable = [
         'placa',

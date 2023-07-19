@@ -16,6 +16,14 @@ class PolizasTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
 
+    public function test_can_list_vehiculos()
+    {
+        Polizas::factory()->count(5)->create();
+
+        $this->get(route('polizas.index'))
+            ->assertStatus(200);
+    }
+
     public function test_can_create_policy()
     {
         // Finge el disco de almacenamiento para las subidas de archivos

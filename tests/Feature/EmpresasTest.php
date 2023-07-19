@@ -20,6 +20,14 @@ class EmpresasTest extends TestCase
         $this->empresa = Empresa::factory()->create();
     }
 
+    public function test_can_list_vehiculos()
+    {
+        Empresa::factory()->count(5)->create();
+
+        $this->get(route('empresas.index'))
+            ->assertStatus(200);
+    }
+
     /** @test */
     public function test_can_create_an_empresa()
     {
@@ -56,7 +64,7 @@ class EmpresasTest extends TestCase
     /** @test */
     public function test_can_show_an_empresa()
     {
-        $response = $this->getJson("/api/empresas/{$this->empresa->id}");
+        $response = $this->getJson(route('empresas.show', $this->empresa->ruc));
 
         $response->assertStatus(200);
         $response->assertJson($this->empresa->toArray());
@@ -65,7 +73,7 @@ class EmpresasTest extends TestCase
     /** @test */
     public function test_can_delete_an_empresa()
     {
-        $response = $this->deleteJson("/api/empresas/{$this->empresa->id}");
+        $response = $this->deleteJson(route('empresas.destroy', $this->empresa->ruc));
 
         $response->assertStatus(204);
         $this->assertDatabaseMissing(Empresa::class, $this->empresa->toArray());

@@ -2,10 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Models\Gestor;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Gestor>
+ * @extends Factory<Gestor>
  */
 class GestorFactory extends Factory
 {

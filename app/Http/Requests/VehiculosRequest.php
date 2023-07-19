@@ -27,16 +27,10 @@ class VehiculosRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'numero_poliza' => 'required|string|max:255',
-            'fecha_inicio' => 'required|date',
-            'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
-            'aseguradora' => 'required|string|max:255',
-            'telefono_aseguradora' => 'required|string|max:20',
-            'telefono_broker' => 'required|string|max:20',
-            'cronograma_pago' => 'required|string|max:255',
-            'poliza_adjunta' => 'required|mimes:pdf', // si quieres validar tipos de archivo específicos puedes usar 'mimes:pdf,docx'
-            'tipo_poliza' => 'required|in:SOAT,VEHICULAR,SAT,TREC,RC',
-            'estado_poliza' => 'required|in:activo,inactivo',
+            'placa' => 'required|max:6',
+            'numero_bastidor' => 'required|max:15',
+            'fotografia_vehiculo' => 'required|image|mimes:jpeg,png,webp|max:1024',
+            'ruc_empresa' => 'required|max:11|exists:empresa,ruc',
         ];
     }
 

@@ -27,16 +27,14 @@ class UsuariosRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'numero_poliza' => 'required|string|max:255',
-            'fecha_inicio' => 'required|date',
-            'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
-            'aseguradora' => 'required|string|max:255',
-            'telefono_aseguradora' => 'required|string|max:20',
-            'telefono_broker' => 'required|string|max:20',
-            'cronograma_pago' => 'required|string|max:255',
-            'poliza_adjunta' => 'required|mimes:pdf', // si quieres validar tipos de archivo específicos puedes usar 'mimes:pdf,docx'
-            'tipo_poliza' => 'required|in:SOAT,VEHICULAR,SAT,TREC,RC',
-            'estado_poliza' => 'required|in:activo,inactivo',
+            'dni' => 'required|max:8',
+            'usuario' => 'required|max:12',
+            'name' => 'required|max:75',
+            'apellidos' => 'required|max:9',
+            'email' => 'required|max:75',
+            'password' => 'required|max:24',
+            'fecha_nacimiento' => 'required|date',
+            'codigo_ruc' => 'required|max:11',
         ];
     }
 

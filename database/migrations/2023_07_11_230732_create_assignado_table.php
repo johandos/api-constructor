@@ -11,16 +11,6 @@ return new class extends Migration
         Schema::create('asignado', function (Blueprint $table) {
             $table->string('codigo_placa', 6)->primary();
             $table->string('codigo_dni', 8);
-
-            $table->primary(['codigo_placa', 'codigo_dni']);
-
-            $table->foreign('codigo_placa')
-                ->references('placa')->on('vehiculo')
-                ->onDelete('cascade')->onUpdate('cascade');
-
-            $table->foreign('codigo_dni')
-                ->references('dni')->on('conductor')
-                ->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

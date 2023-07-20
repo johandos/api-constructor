@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Requests\ObraRequest;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\UsuariosRequest;
-use App\Models\Obra;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;

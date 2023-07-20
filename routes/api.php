@@ -22,4 +22,5 @@ Route::apiResource('polizas', PolizasController::class);
 Route::apiResource('empresas', EmpresaController::class);
 Route::apiResource('usuarios', UsuariosController::class);
 Route::apiResource('vehiculos', VehiculoController::class);
+Route::post('vehiculos/search', [VehiculoController::class, 'search'])->name('vehiculos.search');
 Route::apiResource('obras', ObraController::class);

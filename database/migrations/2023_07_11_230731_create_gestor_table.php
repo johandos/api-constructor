@@ -10,10 +10,6 @@ return new class extends Migration
     {
         Schema::create('gestor', function (Blueprint $table) {
             $table->string('codigo_dni', 8)->primary();
-
-            $table->foreign('codigo_dni')
-                ->references('dni')->on('usuario')
-                ->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

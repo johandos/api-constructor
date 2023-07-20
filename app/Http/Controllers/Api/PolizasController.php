@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\PolizaRequest;
 use App\Models\Polizas;
 use App\Services\FileStorageStrategies\PolizasStorageStrategy;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class PolizasController extends Controller
 {

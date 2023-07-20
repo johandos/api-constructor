@@ -11,14 +11,6 @@ return new class extends Migration
         Schema::create('gestiona', function (Blueprint $table) {
             $table->bigIncrements('codigo_obra');
             $table->string('codigo_dni', 8);
-
-            $table->foreign('codigo_obra')
-                ->references('codigo_obra')->on('obra')
-                ->onDelete('cascade')->onUpdate('cascade');
-
-            $table->foreign('codigo_dni')
-                ->references('dni')->on('gestor')
-                ->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

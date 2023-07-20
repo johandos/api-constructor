@@ -3,15 +3,11 @@
 namespace Tests\Feature;
 
 use App\Models\Empresa;
-use App\Models\Polizas;
 use App\Models\Vehiculo;
-use App\Services\FileStorageStrategies\PolizasStorageStrategy;
-use Database\Seeders\PolizasSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\ValidationException;
 use Tests\TestCase;
 
 class VehiculosTest extends TestCase
@@ -24,6 +20,34 @@ class VehiculosTest extends TestCase
 
         $this->get(route('vehiculos.index'))
             ->assertStatus(200);
+    }
+
+    public function test_can_search_vehicles()
+    {
+        $empresa = Empresa::factory()->create();
+        Vehiculo::factory()->create([
+            'placa' => 'ABC123',
+            'numero_bastidor' => '123456789',
+            'fotografia_vehiculo' => 'foto1.jpg',
+            'ruc_empresa' => $empresa->ruc
+        ]);
+
+        Vehiculo::factory()->create([
+            'placa' => 'DEF456',
+            'numero_bastidor' => '987654321',
+            'fotografia_vehiculo' => 'foto2.jpg',
+            'ruc_empresa' => $empresa->ruc
+        ]);
+
+        $response = $this->getJson('/api/vehiculos?search=ABC123');
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            ['placa' => 'ABC123']
+        ]);
+        $response->assertJsonMissing([
+            ['placa' => 'DEF456']
+        ]);
     }
 
     public function test_can_create_vehiculo()
@@ -99,6 +123,7 @@ class VehiculosTest extends TestCase
                 'ruc_empresa' => $empresa->ruc,
             ]);
     }
+
 
     // TODO: Revisar este destroy
     /*public function test_can_delete_vehiculo()

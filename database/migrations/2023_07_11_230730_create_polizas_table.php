@@ -12,7 +12,7 @@ return new class extends Migration
             $table->string('numero_poliza', 15)->primary();
             $table->date('fecha_inicio');
             $table->date('fecha_fin');
-            $table->string('aseguradora', 15);
+            $table->string('aseguradora', 100);
             $table->string('telefono_aseguradora', 9);
             $table->string('telefono_broker', 9);
             $table->string('cronograma_pago', 50);

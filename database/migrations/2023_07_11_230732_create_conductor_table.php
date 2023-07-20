@@ -9,11 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('conductor', function (Blueprint $table) {
-            $table->string('codigo_dni', 8)->primary();
-
-            $table->foreign('codigo_dni')
-                ->references('dni')->on('usuario')
-                ->onDelete('cascade')->onUpdate('cascade');
+            $table->string('usuario_id', 8)->primary();
         });
     }
 

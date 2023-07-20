@@ -21,9 +21,9 @@ return new class extends Migration
 
 
             $table->string('dni', 8);
-            $table->string('usuario', 12);
+            $table->string('usuario', 25);
             $table->string('name', 75);
-            $table->string('apellidos', 9);
+            $table->string('apellidos', 100);
             $table->date('fecha_nacimiento');
             $table->string('codigo_ruc', 11);
 

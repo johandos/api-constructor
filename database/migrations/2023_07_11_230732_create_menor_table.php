@@ -11,10 +11,6 @@ return new class extends Migration
         Schema::create('menor', function (Blueprint $table) {
             $table->string('codigo_placa', 6)->primary();
             $table->string('veh_menor', 15);
-
-            $table->foreign('codigo_placa')
-                ->references('placa')->on('vehiculo')
-                ->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

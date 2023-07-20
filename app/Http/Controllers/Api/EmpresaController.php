@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\EmpresaRequest;
 use App\Models\Empresa;
 use Illuminate\Http\JsonResponse;

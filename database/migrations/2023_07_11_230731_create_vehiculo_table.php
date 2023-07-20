@@ -13,10 +13,6 @@ return new class extends Migration
             $table->string('numero_bastidor', 15);
             $table->string('fotografia_vehiculo', 50);
             $table->string('ruc_empresa', 11);
-
-            $table->foreign('ruc_empresa')
-                ->references('ruc')->on('empresa')
-                ->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

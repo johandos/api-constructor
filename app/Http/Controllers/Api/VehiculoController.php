@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\VehiculosRequest;
 use App\Models\Vehiculo;
-use App\Services\FileStorageStrategies\PolizasStorageStrategy;
 use App\Services\FileStorageStrategies\VehiculoStorageStrategy;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
 
 class VehiculoController extends Controller
 {
@@ -49,6 +49,20 @@ class VehiculoController extends Controller
         } else {
             return response()->json(['error' => 'Vehiculo no encontrada'], 404);
         }
+    }
+
+    public function search(Request $request): JsonResponse
+    {
+        $search = $request->get('search');
+
+        $vehiculos = Vehiculo::query()
+            ->where('placa', 'like', "%{$search}%")
+            ->orWhere('numero_bastidor', 'like', "%{$search}%")
+            ->orWhere('fotografia_vehiculo', 'like', "%{$search}%")
+            ->orWhere('ruc_empresa', 'like', "%{$search}%")
+            ->get();
+
+        return response()->json($vehiculos);
     }
 
     public function update(VehiculosRequest $request, $id): JsonResponse

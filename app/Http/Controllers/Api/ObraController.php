@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\ObraRequest;
 use App\Models\Obra;
 use Illuminate\Http\JsonResponse;

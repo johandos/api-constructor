@@ -11,16 +11,6 @@ return new class extends Migration
         Schema::create('tiene', function (Blueprint $table) {
             $table->string('codigo_placa', 6)->primary();
             $table->string('codigo_numero_poliza', 15);
-
-            $table->primary(['codigo_placa', 'codigo_numero_poliza']);
-
-            $table->foreign('codigo_placa')
-                ->references('placa')->on('vehiculo')
-                ->onDelete('cascade')->onUpdate('cascade');
-
-            $table->foreign('codigo_numero_poliza')
-                ->references('numero_poliza')->on('polizas')
-                ->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

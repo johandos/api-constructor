@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Models\Obra;
+use App\Models\Constructions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -12,7 +12,7 @@ class ObraTest extends TestCase
 
     public function test_can_list_vehiculos()
     {
-        Obra::factory()->count(5)->create();
+        Constructions::factory()->count(5)->create();
 
         $this->get(route('obras.index'))
             ->assertStatus(200);
@@ -21,7 +21,8 @@ class ObraTest extends TestCase
     public function test_can_create_obra()
     {
         $obraData = [
-            'nombre_obra' => 'Obra Test',
+            'codigo_obra' => '10552',
+            'nombre_obra' => 'Constructions Test',
             'direccion' => 'Dirección de prueba',
             'ubicacion' => 'Ubicación de prueba',
         ];
@@ -29,40 +30,38 @@ class ObraTest extends TestCase
         $this->post(route('obras.store'), $obraData)
             ->assertStatus(201);
 
-        $this->assertDatabaseHas(Obra::class, $obraData);
+        $this->assertDatabaseHas(Constructions::class, $obraData);
     }
 
     public function test_can_update_obra()
     {
-        $obra = Obra::factory()->create();
+        $obra = Constructions::factory()->create();
 
         $updatedObraData = [
-            'nombre_obra' => 'Obra Actualizada',
+            'nombre_obra' => 'Constructions Actualizada',
             'direccion' => 'Nueva Dirección',
             'ubicacion' => 'Nueva Ubicación',
         ];
 
-        $this->put(route('obras.update', $obra->codigo_obra), $updatedObraData)
+        $this->put(route('obras.update', $obra->id), $updatedObraData)
             ->assertStatus(200);
 
-        $this->assertDatabaseHas(Obra::class, $updatedObraData);
+        $this->assertDatabaseHas(Constructions::class, $updatedObraData);
     }
 
     public function test_can_show_obra()
     {
-        $obra = Obra::factory()->create();
+        $obra = Constructions::factory()->create();
 
-        $this->get(route('obras.show', $obra->codigo_obra))
+        $this->get(route('obras.show', $obra->id))
             ->assertStatus(200);
     }
 
-    /*public function test_can_delete_obra()
+    public function test_can_delete_obra()
     {
-        $obra = Obra::factory()->create();
+        $obra = Constructions::factory()->create();
 
-        $this->delete(route('obras.destroy', $obra->codigo_obra))
+        $this->delete(route('obras.destroy', $obra->id))
             ->assertStatus(204);
-
-        $this->assertSoftDeleted(Obra::class, ['id' => $obra->codigo_obra]);
-    }*/
+    }
 }

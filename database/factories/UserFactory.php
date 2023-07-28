@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Empresa;
+use App\Models\Companies;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -19,7 +19,7 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
-        $empresa = Empresa::factory()->create();
+        $empresa = Companies::factory()->create();
 
         return [
             'email' => $this->faker->unique()->safeEmail,
@@ -30,8 +30,7 @@ class UserFactory extends Factory
             'usuario' => $this->faker->unique()->userName,
             'name' => $this->faker->name,
             'apellidos' => $this->faker->lastName,
-            'fecha_nacimiento' => $this->faker->date(),
-            'codigo_ruc' => $empresa->ruc
+            'fecha_nacimiento' => $this->faker->date()
         ];
     }
 

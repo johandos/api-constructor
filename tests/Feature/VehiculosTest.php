@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Models\Empresa;
-use App\Models\Vehiculo;
+use App\Models\Companies;
+use App\Models\Vehicles;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
@@ -12,11 +12,11 @@ use Tests\TestCase;
 
 class VehiculosTest extends TestCase
 {
-    use RefreshDatabase, WithFaker;
+    use WithFaker;
 
     public function test_can_list_vehiculos()
     {
-        Vehiculo::factory()->count(5)->create();
+        Vehicles::factory()->count(5)->create();
 
         $this->get(route('vehiculos.index'))
             ->assertStatus(200);
@@ -24,19 +24,19 @@ class VehiculosTest extends TestCase
 
     public function test_can_search_vehicles()
     {
-        $empresa = Empresa::factory()->create();
-        Vehiculo::factory()->create([
+        $empresa = Companies::factory()->create();
+        Vehicles::factory()->create([
             'placa' => 'ABC123',
             'numero_bastidor' => '123456789',
             'fotografia_vehiculo' => 'foto1.jpg',
-            'ruc_empresa' => $empresa->ruc
+            'companies_id' => $empresa->id
         ]);
 
-        Vehiculo::factory()->create([
+        Vehicles::factory()->create([
             'placa' => 'DEF456',
             'numero_bastidor' => '987654321',
             'fotografia_vehiculo' => 'foto2.jpg',
-            'ruc_empresa' => $empresa->ruc
+            'companies_id' => $empresa->id
         ]);
 
         $response = $this->getJson('/api/vehiculos?search=ABC123');
@@ -52,14 +52,15 @@ class VehiculosTest extends TestCase
 
     public function test_can_create_vehiculo()
     {
-        $empresa = Empresa::factory()->create();
+        $empresa = Companies::factory()->create();
+
         $image = UploadedFile::fake()->image('vehiculo.png', 800, 600);
 
         $data = [
             'placa' => 'NPT486',
             'numero_bastidor' => 'GTE39070081060X',
             'fotografia_vehiculo' => $image,
-            'ruc_empresa' => $empresa->ruc,
+            'companies_id' => $empresa->id,
         ];
 
         $response = $this->post(route('vehiculos.store'), $data);
@@ -68,13 +69,13 @@ class VehiculosTest extends TestCase
         $response->assertStatus(201);
 
         $data['fotografia_vehiculo'] = $image->hashName();
-        $this->assertDatabaseHas(Vehiculo::class, $data);
+        $this->assertDatabaseHas(Vehicles::class, $data);
     }
 
     public function test_can_update_vehiculo()
     {
-        $empresa = Empresa::factory()->create();
-        $vehiculo = Vehiculo::factory()->create([
+        $empresa = Companies::factory()->create();
+        $vehiculo = Vehicles::factory()->create([
             'placa' => 'NPT486',
         ]);
 
@@ -85,18 +86,18 @@ class VehiculosTest extends TestCase
             'placa' => 'NPT400',
             'numero_bastidor' => 'GTE39070081060X',
             'fotografia_vehiculo' => $image,
-            'ruc_empresa' => $empresa->ruc,
+            'companies_id' => $empresa->id,
         ];
 
         // Realizar la petición de actualización
-        $response = $this->putJson(route('vehiculos.update', $vehiculo->placa), $data);
+        $response = $this->putJson(route('vehiculos.update', $vehiculo->id), $data);
 
         // Verificar que la petición fue exitosa
         $response->assertStatus(200);
 
         // Verificar que la póliza se actualizó en la base de datos
         $data['fotografia_vehiculo'] = $image->hashName();
-        $this->assertDatabaseHas('vehiculo', $data);
+        $this->assertDatabaseHas(Vehicles::class, $data);
 
         // Comprueba que el archivo se haya cargado en el disco 'public/polizas'.
         Storage::disk('public')->assertExists("vehiculos/{$image->hashName()}");
@@ -104,35 +105,34 @@ class VehiculosTest extends TestCase
 
     public function test_can_get_vehiculo()
     {
-        $empresa = Empresa::factory()->create();
+        $empresa = Companies::factory()->create();
         $image = UploadedFile::fake()->image('vehiculo.png', 800, 600);
-        $vehiculo = Vehiculo::factory()->create([
+        $vehiculo = Vehicles::factory()->create([
             'placa' => 'NPT400',
             'numero_bastidor' => 'GTE39070081060X',
             'fotografia_vehiculo' => $image->hashName(),
-            'ruc_empresa' => $empresa->ruc,
+            'companies_id' => $empresa->id,
         ]);
 
-        $response = $this->get(route('vehiculos.show', $vehiculo->placa));
+        $response = $this->get(route('vehiculos.show', $vehiculo->id));
 
         $response->assertStatus(200)
             ->assertJson([
                 'placa' => 'NPT400',
                 'numero_bastidor' => 'GTE39070081060X',
                 'fotografia_vehiculo' => $image->hashName(),
-                'ruc_empresa' => $empresa->ruc,
+                'companies_id' => $empresa->id,
             ]);
     }
 
 
-    // TODO: Revisar este destroy
-    /*public function test_can_delete_vehiculo()
+    public function test_can_delete_vehiculo()
     {
-        $vehiculo = Vehiculo::factory()->create();
+        $vehiculo = Vehicles::factory()->create();
 
-        $response = $this->delete(route('vehiculos.destroy', $vehiculo->placa));
+        $response = $this->delete(route('vehiculos.destroy', $vehiculo->id));
 
         $response->assertStatus(204);
-        $this->assertDatabaseMissing(Vehiculo::class, ['placa' => $vehiculo->placa]);
-    }*/
+        $this->assertDatabaseMissing(Vehicles::class, ['placa' => $vehiculo->id]);
+    }
 }

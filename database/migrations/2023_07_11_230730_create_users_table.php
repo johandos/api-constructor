@@ -14,22 +14,15 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
-            $table->timestamps();
-
-
             $table->string('dni', 8);
             $table->string('usuario', 25);
             $table->string('name', 75);
             $table->string('apellidos', 100);
             $table->date('fecha_nacimiento');
-            $table->string('codigo_ruc', 11);
-
-            $table->foreign('codigo_ruc')
-                ->references('ruc')->on('empresa')
-                ->onDelete('cascade')->onUpdate('cascade');
+            $table->timestamp('email_verified_at')->nullable();
+            $table->timestamps();
         });
     }
 

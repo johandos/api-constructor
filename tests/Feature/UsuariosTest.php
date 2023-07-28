@@ -2,11 +2,11 @@
 
 namespace Tests\Feature;
 
-use App\Models\Empresa;
-use App\Models\Polizas;
+use App\Models\Companies;
+use App\Models\Polices;
 use App\Models\User;
 use App\Services\FileStorageStrategies\PolizasStorageStrategy;
-use Database\Seeders\PolizasSeeder;
+use Database\Seeders\PolicesSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
@@ -16,7 +16,7 @@ use Tests\TestCase;
 
 class UsuariosTest extends TestCase
 {
-    use RefreshDatabase, WithFaker;
+    use WithFaker;
 
     public function test_can_list_vehiculos()
     {
@@ -28,7 +28,7 @@ class UsuariosTest extends TestCase
 
     public function test_can_create_usuario()
     {
-        $empresa = Empresa::factory()->create();
+        $empresa = Companies::factory()->create();
 
         $userData = [
             'dni' => '12345678',
@@ -38,7 +38,7 @@ class UsuariosTest extends TestCase
             'email' => 'email@test.com',
             'password' => 'passwordTest',
             'fecha_nacimiento' => '1990-01-01',
-            'codigo_ruc' => $empresa->ruc,
+            'companies_id' => $empresa->id,
         ];
 
         $this->post(route('usuarios.store'), $userData)
@@ -47,7 +47,7 @@ class UsuariosTest extends TestCase
 
     public function test_can_update_usuario()
     {
-        $empresa = Empresa::factory()->create();
+        $empresa = Companies::factory()->create();
         $user = User::factory()->create();
 
         $updatedUsuarioData = [

@@ -5,11 +5,11 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
-use App\Models\Empresa;
+use App\Models\Companies;
 
 class EmpresasTest extends TestCase
 {
-    use RefreshDatabase, WithFaker;
+    use WithFaker;
 
     private $empresa;
 
@@ -17,12 +17,12 @@ class EmpresasTest extends TestCase
     {
         parent::setUp();
 
-        $this->empresa = Empresa::factory()->create();
+        $this->empresa = Companies::factory()->create();
     }
 
     public function test_can_list_vehiculos()
     {
-        Empresa::factory()->count(5)->create();
+        Companies::factory()->count(5)->create();
 
         $this->get(route('empresas.index'))
             ->assertStatus(200);
@@ -31,18 +31,18 @@ class EmpresasTest extends TestCase
     /** @test */
     public function test_can_create_an_empresa()
     {
-        $data = Empresa::factory()->make()->toArray();
+        $data = Companies::factory()->make()->toArray();
 
         $response = $this->postJson('/api/empresas', $data);
 
         $response->assertStatus(201);
-        $this->assertDatabaseHas(Empresa::class, $data);
+        $this->assertDatabaseHas(Companies::class, $data);
     }
 
     /** @test */
     public function test_can_update_an_empresa()
     {
-        $empresa = Empresa::factory()->create([
+        $empresa = Companies::factory()->create([
             'ruc' => '05648695724',
         ]);
 
@@ -55,16 +55,16 @@ class EmpresasTest extends TestCase
             'telefono' => '666056512',
         ];
 
-        $response = $this->putJson(route('empresas.update', $empresa->ruc), $data);
+        $response = $this->putJson(route('empresas.update', $empresa->id), $data);
 
         $response->assertStatus(200);
-        $this->assertDatabaseHas(Empresa::class, $data);
+        $this->assertDatabaseHas(Companies::class, $data);
     }
 
     /** @test */
     public function test_can_show_an_empresa()
     {
-        $response = $this->getJson(route('empresas.show', $this->empresa->ruc));
+        $response = $this->getJson(route('empresas.show', $this->empresa->id));
 
         $response->assertStatus(200);
         $response->assertJson($this->empresa->toArray());
@@ -73,9 +73,9 @@ class EmpresasTest extends TestCase
     /** @test */
     public function test_can_delete_an_empresa()
     {
-        $response = $this->deleteJson(route('empresas.destroy', $this->empresa->ruc));
+        $response = $this->deleteJson(route('empresas.destroy', $this->empresa->id));
 
         $response->assertStatus(204);
-        $this->assertDatabaseMissing(Empresa::class, $this->empresa->toArray());
+        $this->assertDatabaseMissing(Companies::class, $this->empresa->toArray());
     }
 }

@@ -1,10 +1,10 @@
 <?php
 
-use App\Http\Controllers\Api\EmpresaController;
-use App\Http\Controllers\Api\ObraController;
-use App\Http\Controllers\Api\PolizasController;
-use App\Http\Controllers\Api\UsuariosController;
-use App\Http\Controllers\Api\VehiculoController;
+use App\Http\Controllers\Api\CompaniesController;
+use App\Http\Controllers\Api\ConstructionsController;
+use App\Http\Controllers\Api\PolicesController;
+use App\Http\Controllers\Api\UsersController;
+use App\Http\Controllers\Api\VehiclesController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,9 +18,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::apiResource('polizas', PolizasController::class);
-Route::apiResource('empresas', EmpresaController::class);
-Route::apiResource('usuarios', UsuariosController::class);
-Route::apiResource('vehiculos', VehiculoController::class);
-Route::post('vehiculos/search', [VehiculoController::class, 'search'])->name('vehiculos.search');
-Route::apiResource('obras', ObraController::class);
+Route::apiResource('polizas', PolicesController::class);
+Route::apiResource('empresas', CompaniesController::class);
+Route::apiResource('usuarios', UsersController::class);
+Route::apiResource('vehiculos', VehiclesController::class);
+Route::post('vehiculos/search', [VehiclesController::class, 'search'])->name('vehiculos.search');
+Route::apiResource('obras', ConstructionsController::class);

@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Models\Polizas;
+use App\Models\Polices;
 use App\Services\FileStorageStrategies\PolizasStorageStrategy;
-use Database\Seeders\PolizasSeeder;
+use Database\Seeders\PolicesSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
@@ -14,11 +14,11 @@ use Tests\TestCase;
 
 class PolizasTest extends TestCase
 {
-    use RefreshDatabase, WithFaker;
+    use WithFaker;
 
     public function test_can_list_vehiculos()
     {
-        Polizas::factory()->count(5)->create();
+        Polices::factory()->count(5)->create();
 
         $this->get(route('polizas.index'))
             ->assertStatus(200);
@@ -49,7 +49,7 @@ class PolizasTest extends TestCase
         $response->assertStatus(201);
 
         $data['poliza_adjunta'] = $file->hashName();
-        $this->assertDatabaseHas(Polizas::class, $data);
+        $this->assertDatabaseHas(Polices::class, $data);
     }
 
     public function test_poliza_creation_fails_with_invalid_data()
@@ -77,7 +77,7 @@ class PolizasTest extends TestCase
 
     public function test_can_update_policy()
     {
-        $poliza = Polizas::factory()->create([
+        $poliza = Polices::factory()->create([
             'numero_poliza' => 'NP-789605'
         ]);
 
@@ -100,14 +100,14 @@ class PolizasTest extends TestCase
         ];
 
         // Realizar la petición de actualización
-        $response = $this->putJson(route('polizas.update', $poliza->numero_poliza), $data);
+        $response = $this->putJson(route('polizas.update', $poliza->id), $data);
 
         // Verificar que la petición fue exitosa
         $response->assertStatus(200);
 
         // Verificar que la póliza se actualizó en la base de datos
         $data['poliza_adjunta'] = $file->hashName();
-        $this->assertDatabaseHas('polizas', $data);
+        $this->assertDatabaseHas(Polices::class, $data);
 
         // Comprueba que el archivo se haya cargado en el disco 'public/polizas'.
         Storage::disk('public')->assertExists("polizas/{$file->hashName()}");
@@ -115,9 +115,9 @@ class PolizasTest extends TestCase
 
     public function test_can_get_policy()
     {
-        $poliza = Polizas::factory()->create();
+        $poliza = Polices::factory()->create();
 
-        $response = $this->get(route('polizas.show', $poliza->numero_poliza));
+        $response = $this->get(route('polizas.show', $poliza->id));
 
         $response->assertStatus(200)
             ->assertJson([
@@ -130,11 +130,11 @@ class PolizasTest extends TestCase
 
     public function test_can_delete_policy()
     {
-        $poliza = Polizas::factory()->create();
+        $poliza = Polices::factory()->create();
 
-        $response = $this->delete(route('polizas.destroy', $poliza->numero_poliza));
+        $response = $this->delete(route('polizas.destroy', $poliza->id));
 
         $response->assertStatus(204);
-        $this->assertDatabaseMissing(Polizas::class, ['numero_poliza' => $poliza->numero_poliza]);
+        $this->assertDatabaseMissing(Polices::class, ['numero_poliza' => $poliza->numero_poliza]);
     }
 }

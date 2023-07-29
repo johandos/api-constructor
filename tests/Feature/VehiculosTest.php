@@ -39,11 +39,14 @@ class VehiculosTest extends TestCase
             'companies_id' => $empresa->id
         ]);
 
-        $response = $this->getJson('/api/vehiculos?search=ABC123');
+        $response = $this->getJson('/api/vehiculos_search?search=ABC123');
 
         $response->assertStatus(200);
         $response->assertJson([
-            ['placa' => 'ABC123']
+            'placa' => 'ABC123',
+            'numero_bastidor' => '123456789',
+            'fotografia_vehiculo' => 'foto1.jpg',
+            'companies_id' => $empresa->id
         ]);
         $response->assertJsonMissing([
             ['placa' => 'DEF456']

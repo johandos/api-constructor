@@ -13,7 +13,7 @@ return new class extends Migration
             $table->string('placa', 6);
             $table->string('numero_bastidor', 15);
             $table->string('fotografia_vehiculo', 50);
-            $table->integer('companies_id');
+            $table->unsignedBigInteger('companies_id');
             $table->timestamps();
 
             $table->foreign('companies_id')

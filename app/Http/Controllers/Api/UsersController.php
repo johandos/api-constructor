@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UsersRequest;
+use App\Models\Companies;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class UsersController extends Controller
@@ -46,6 +48,22 @@ class UsersController extends Controller
             return response()->json(['error' => 'Usuario no encontrada'], 404);
         }
     }
+    public function search(Request $request): JsonResponse
+    {
+        $search = $request->get('search');
+
+        $vehiculos = User::query()
+            ->where('dni', 'like', "%$search%")
+            ->first();
+
+        if ($vehiculos){
+            return response()->json($vehiculos);
+        }else{
+            return response()->json([
+                'message' => 'Usuario no encontrado'
+            ], 400);
+        }
+    }
 
     public function update(UsersRequest $request, $id): JsonResponse
     {
@@ -54,7 +72,7 @@ class UsersController extends Controller
         if ($user) {
             $user->update($request->validated());
 
-            $user = User::query()->find($request->get('id'));
+            $user = User::query()->find($id);
 
             return response()->json([
                 'message' => 'Usuario actualizada con éxito',

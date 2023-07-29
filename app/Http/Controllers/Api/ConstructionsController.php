@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ConstructionsRequest;
+use App\Models\Companies;
 use App\Models\Constructions;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class ConstructionsController extends Controller
@@ -47,6 +49,23 @@ class ConstructionsController extends Controller
         }
     }
 
+    public function search(Request $request): JsonResponse
+    {
+        $search = $request->get('search');
+
+        $vehiculos = Constructions::query()
+            ->where('codigo_obra', 'like', "%$search%")
+            ->first();
+
+        if ($vehiculos){
+            return response()->json($vehiculos);
+        }else{
+            return response()->json([
+                'message' => 'Vehiculo no encontrado'
+            ], 400);
+        }
+    }
+
     public function update(ConstructionsRequest $request, $id): JsonResponse
     {
         $obra = Constructions::query()->find($id);
@@ -54,7 +73,7 @@ class ConstructionsController extends Controller
         if ($obra) {
             $obra->update($request->validated());
 
-            $obra = Constructions::query()->find($request->get('id'));
+            $obra = Constructions::query()->find($id);
 
             return response()->json([
                 'message' => 'Constructions actualizada con éxito',
@@ -63,7 +82,7 @@ class ConstructionsController extends Controller
         }
 
         return response()->json([
-            'message' => 'Error inesperado al realizar la actualizacion'
+            'message' => 'Obra no encontrada'
         ], 400);
     }
 

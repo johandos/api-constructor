@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PolicesRequest;
+use App\Models\Companies;
 use App\Models\Polices;
 use App\Services\FileStorageStrategies\PolizasStorageStrategy;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class PolicesController extends Controller
 {
@@ -23,8 +25,7 @@ class PolicesController extends Controller
         if ($request->hasFile('poliza_adjunta')) {
             $file = $request->file('poliza_adjunta');
             $disk = new PolizasStorageStrategy();
-            $file->move($disk->getPath(), $file->hashName());
-            $poliza->poliza_adjunta = $file->hashName();
+            $poliza->poliza_adjunta = $file->move($disk->getPath(), $file->hashName())->getFilename();
             $poliza->save();
 
             return response()->json([
@@ -48,6 +49,22 @@ class PolicesController extends Controller
             return response()->json(['error' => 'Póliza no encontrada'], 404);
         }
     }
+    public function search(Request $request): JsonResponse
+    {
+        $search = $request->get('search');
+
+        $vehiculos = Polices::query()
+            ->where('numero_poliza', 'like', "%$search%")
+            ->first();
+
+        if ($vehiculos){
+            return response()->json($vehiculos);
+        }else{
+            return response()->json([
+                'message' => 'poliza no encontrado'
+            ], 400);
+        }
+    }
 
     public function update(PolicesRequest $request, $id): JsonResponse
     {
@@ -59,12 +76,11 @@ class PolicesController extends Controller
             if ($request->hasFile('poliza_adjunta')) {
                 $file = $request->file('poliza_adjunta');
                 $disk = new PolizasStorageStrategy();
-                $file->move($disk->getPath(), $file->hashName());
-                $poliza->poliza_adjunta = $file->hashName();
+                $poliza->poliza_adjunta = $file->move($disk->getPath(), $file->hashName())->getFilename();
                 $poliza->save();
             }
 
-            $poliza = Polices::query()->find($request->get('numero_poliza'));
+            $poliza = Polices::query()->find($id);
 
             return response()->json([
                 'message' => 'Poliza actualizada con éxito',
@@ -73,7 +89,7 @@ class PolicesController extends Controller
         }
 
         return response()->json([
-            'message' => 'El archivo de la póliza es requerido'
+            'message' => 'Poliza no encontrada'
         ], 400);
     }
 

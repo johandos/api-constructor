@@ -26,15 +26,27 @@ class UsersRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'email' => 'required|max:75|email|unique:users,email',
-            'dni' => 'required|max:8|unique:users,dni',
-            'usuario' => 'required|max:12',
-            'name' => 'required|max:75',
-            'apellidos' => 'required|max:9',
-            'password' => 'required|max:24',
-            'fecha_nacimiento' => 'required|date',
-        ];
+        return match ($this->method()) {
+            'POST' => [
+                'email' => 'required|max:75|email|unique:users,email',
+                'dni' => 'required|max:8|unique:users,dni',
+                'usuario' => 'required|max:12',
+                'name' => 'required|max:75',
+                'apellidos' => 'required|max:9',
+                'password' => 'required|max:24',
+                'fecha_nacimiento' => 'required|date',
+            ],
+            'PUT', 'PATCH' => [
+                'email' => 'max:75|email|unique:users,email',
+                'dni' => 'max:8|unique:users,dni',
+                'usuario' => 'max:12',
+                'name' => 'max:75',
+                'apellidos' => 'max:9',
+                'password' => 'max:24',
+                'fecha_nacimiento' => 'date',
+            ],
+            default => []
+        };
     }
 
     protected function failedValidation(Validator $validator)

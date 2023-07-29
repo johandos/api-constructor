@@ -25,8 +25,7 @@ class VehiclesController extends Controller
         if ($request->hasFile('fotografia_vehiculo')) {
             $file = $request->file('fotografia_vehiculo');
             $disk = new VehiculoStorageStrategy();
-            $file->move($disk->getPath(), $file->hashName());
-            $vehiculo->fotografia_vehiculo = $file->hashName();
+            $vehiculo->fotografia_vehiculo = $file->move($disk->getPath(), $file->hashName())->getFilename();
             $vehiculo->save();
 
             return response()->json([
@@ -56,17 +55,21 @@ class VehiclesController extends Controller
         $search = $request->get('search');
 
         $vehiculos = Vehicles::query()
-            ->where('placa', 'like', "%{$search}%")
-            ->orWhere('numero_bastidor', 'like', "%{$search}%")
-            ->get();
+            ->where('placa', 'like', "%$search%")
+            ->first();
 
-        return response()->json($vehiculos);
+        if ($vehiculos){
+            return response()->json($vehiculos);
+        }else{
+            return response()->json([
+                'message' => 'Vehiculo no encontrado'
+            ], 400);
+        }
     }
 
     public function update(VehiclesRequest $request, $id): JsonResponse
     {
         $vehiculo = Vehicles::query()->find($id);
-
 
         if ($vehiculo) {
             $vehiculo->update($request->validated());
@@ -74,10 +77,10 @@ class VehiclesController extends Controller
             if ($request->hasFile('fotografia_vehiculo')) {
                 $file = $request->file('fotografia_vehiculo');
                 $disk = new VehiculoStorageStrategy();
-                $file->move($disk->getPath(), $file->hashName());
-                $vehiculo->fotografia_vehiculo = $file->hashName();
+                $vehiculo->fotografia_vehiculo = $file->move($disk->getPath(), $file->hashName())->getFilename();
                 $vehiculo->save();
             }
+
 
             $vehiculo = Vehicles::query()->find($id);
 
@@ -88,7 +91,7 @@ class VehiclesController extends Controller
         }
 
         return response()->json([
-            'message' => 'La imagen del vehiculo es requerido'
+            'message' => 'Vehiculo no encontrado'
         ], 400);
     }
 

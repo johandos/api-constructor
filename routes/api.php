@@ -19,8 +19,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::apiResource('polizas', PolicesController::class);
+Route::get('polizas_search', [PolicesController::class, 'search'])->name('polizas.search');
 Route::apiResource('empresas', CompaniesController::class);
+Route::get('empresas_search', [CompaniesController::class, 'search'])->name('empresas.search');
 Route::apiResource('usuarios', UsersController::class);
+Route::get('usuarios_search', [UsersController::class, 'search'])->name('usuarios.search');
 Route::apiResource('vehiculos', VehiclesController::class);
-Route::post('vehiculos/search', [VehiclesController::class, 'search'])->name('vehiculos.search');
+Route::get('vehiculos_search', [VehiclesController::class, 'search'])->name('vehiculos.search');
 Route::apiResource('obras', ConstructionsController::class);
+Route::get('obras_search', [ConstructionsController::class, 'search'])->name('obras.search');

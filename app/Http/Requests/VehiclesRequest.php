@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\PhotographyVehicleRule;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
@@ -26,12 +27,23 @@ class VehiclesRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'placa' => 'required|max:6',
-            'numero_bastidor' => 'required|max:15',
-            'fotografia_vehiculo' => 'required|image|mimes:jpeg,png,webp|max:1024',
-            'companies_id' => 'required|exists:companies,id',
-        ];
+        return match ($this->method()) {
+            'POST' => [
+                'placa' => 'required|max:6',
+                'numero_bastidor' => 'required|max:15',
+                'fotografia_vehiculo' => 'required|image|mimes:jpeg,png,webp|max:1024',
+                'companies_id' => 'required|exists:companies,id',
+            ],
+            'PUT', 'PATCH' => [
+                'placa' => 'max:6',
+                'numero_bastidor' => 'max:15',
+                'fotografia_vehiculo' => [
+                    'sometimes', 'image', 'mimes:jpeg,png,webp', 'max:1024',
+                ],
+                'companies_id' => 'sometimes|exists:companies,id',
+            ],
+            default => [],
+        };
     }
 
     protected function failedValidation(Validator $validator)

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CompaniesRequest;
 use App\Models\Companies;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class CompaniesController extends Controller
@@ -47,6 +48,23 @@ class CompaniesController extends Controller
         }
     }
 
+    public function search(Request $request): JsonResponse
+    {
+        $search = $request->get('search');
+
+        $vehiculos = Companies::query()
+            ->where('ruc', 'like', "%$search%")
+            ->first();
+
+        if ($vehiculos){
+            return response()->json($vehiculos);
+        }else{
+            return response()->json([
+                'message' => 'Vehiculo no encontrado'
+            ], 400);
+        }
+    }
+
     public function update(CompaniesRequest $request, $id): JsonResponse
     {
         $empresa = Companies::query()->find($id);
@@ -54,7 +72,7 @@ class CompaniesController extends Controller
         if ($empresa) {
             $empresa->update($request->validated());
 
-            $empresa = Companies::query()->find($request->get('id'));
+            $empresa = Companies::query()->find($id);
 
             return response()->json([
                 'message' => 'Companies actualizada con éxito',

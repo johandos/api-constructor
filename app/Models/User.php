@@ -33,7 +33,7 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    public function empresa(): BelongsTo
+    public function company(): BelongsTo
     {
         return $this->belongsTo(Companies::class, 'codigo_ruc');
     }

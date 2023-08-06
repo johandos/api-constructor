@@ -10,6 +10,7 @@ use App\Models\Polices;
 use App\Models\User;
 use App\Models\Vehicles;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {

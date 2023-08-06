@@ -37,6 +37,11 @@ class CompaniesRequest extends FormRequest
             ],
             'PUT', 'PATCH' => [
                 'ruc' => 'string|max:11|unique:companies,ruc',
+                'razon_social' => 'string|max:75',
+                'direccion' => 'string|max:75',
+                'contacto' => 'string|max:50',
+                'correo' => 'string|email|max:50|unique:companies,correo',
+                'telefono' => 'string|max:9',
             ],
             default => [],
         };

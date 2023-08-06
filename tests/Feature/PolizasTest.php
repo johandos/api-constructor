@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Polices;
+use App\Models\User;
 use App\Services\FileStorageStrategies\PolizasStorageStrategy;
 use Database\Seeders\PolicesSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -14,7 +15,16 @@ use Tests\TestCase;
 
 class PolizasTest extends TestCase
 {
-    use WithFaker;
+    use RefreshDatabase, WithFaker;
+
+    protected User $user;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->user = User::factory()->create();
+        $this->actingAs($this->user);
+    }
 
     public function test_can_list_vehiculos()
     {

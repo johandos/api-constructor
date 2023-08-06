@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Companies;
+use App\Models\User;
 use App\Models\Vehicles;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -12,7 +13,16 @@ use Tests\TestCase;
 
 class VehiculosTest extends TestCase
 {
-    use WithFaker;
+    use RefreshDatabase, WithFaker;
+
+    protected User $user;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->user = User::factory()->create();
+        $this->actingAs($this->user);
+    }
 
     public function test_can_list_vehiculos()
     {

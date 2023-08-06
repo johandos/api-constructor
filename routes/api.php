@@ -16,7 +16,6 @@ Route::post('auth/login', [AuthController::class, 'login'])->name('auth.login');
 
 Route::middleware('auth:sanctum')->group(function (){
     Route::get('auth/logout', [AuthController::class, 'logout'])->name('auth.logout');
-
     Route::apiResource('polizas', PolicesController::class);
     Route::get('polizas_search', [PolicesController::class, 'search'])->name('polizas.search');
     Route::apiResource('empresas', CompaniesController::class);

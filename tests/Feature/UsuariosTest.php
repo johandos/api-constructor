@@ -16,7 +16,16 @@ use Tests\TestCase;
 
 class UsuariosTest extends TestCase
 {
-    use WithFaker;
+    use RefreshDatabase, WithFaker;
+
+    protected User $user;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->user = User::factory()->create();
+        $this->actingAs($this->user);
+    }
 
     public function test_can_list_vehiculos()
     {
@@ -28,8 +37,6 @@ class UsuariosTest extends TestCase
 
     public function test_can_create_usuario()
     {
-        $empresa = Companies::factory()->create();
-
         $userData = [
             'dni' => '12345678',
             'usuario' => 'userTest',
@@ -38,7 +45,6 @@ class UsuariosTest extends TestCase
             'email' => 'email@test.com',
             'password' => 'passwordTest',
             'fecha_nacimiento' => '1990-01-01',
-            'companies_id' => $empresa->id,
         ];
 
         $this->post(route('usuarios.store'), $userData)

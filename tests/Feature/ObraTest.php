@@ -3,12 +3,23 @@
 namespace Tests\Feature;
 
 use App\Models\Constructions;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class ObraTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase, WithFaker;
+
+    protected User $user;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->user = User::factory()->create();
+        $this->actingAs($this->user);
+    }
 
     public function test_can_list_vehiculos()
     {

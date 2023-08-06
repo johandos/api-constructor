@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -9,16 +10,19 @@ use App\Models\Companies;
 
 class EmpresasTest extends TestCase
 {
-    use WithFaker;
+    use RefreshDatabase, WithFaker;
 
-    private $empresa;
+    protected User $user;
+    private Companies $company;
 
     public function setUp(): void
     {
         parent::setUp();
-
-        $this->empresa = Companies::factory()->create();
+        $this->user = User::factory()->create();
+        $this->actingAs($this->user);
+        $this->company = Companies::factory()->create();
     }
+
 
     public function test_can_list_vehiculos()
     {
@@ -64,18 +68,18 @@ class EmpresasTest extends TestCase
     /** @test */
     public function test_can_show_an_empresa()
     {
-        $response = $this->getJson(route('empresas.show', $this->empresa->id));
+        $response = $this->getJson(route('empresas.show', $this->company->id));
 
         $response->assertStatus(200);
-        $response->assertJson($this->empresa->toArray());
+        $response->assertJson($this->company->toArray());
     }
 
     /** @test */
     public function test_can_delete_an_empresa()
     {
-        $response = $this->deleteJson(route('empresas.destroy', $this->empresa->id));
+        $response = $this->deleteJson(route('empresas.destroy', $this->company->id));
 
         $response->assertStatus(204);
-        $this->assertDatabaseMissing(Companies::class, $this->empresa->toArray());
+        $this->assertDatabaseMissing(Companies::class, $this->company->toArray());
     }
 }

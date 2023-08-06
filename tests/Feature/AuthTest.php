@@ -31,7 +31,7 @@ class AuthTest extends TestCase
      *
      * @return void
      */
-    public function testUserRegistration()
+    public function test_user_registration()
     {
         $userData = [
             'name' => $this->faker->name,
@@ -59,7 +59,7 @@ class AuthTest extends TestCase
      *
      * @return void
      */
-    public function testUserLogin()
+    public function test_user_login()
     {
         $user = User::factory()->create([
             'password' => Hash::make('password123')
@@ -97,6 +97,6 @@ class AuthTest extends TestCase
         $response = $authController->logout();
 
         $this->assertEquals(ResponseAlias::HTTP_OK, $response->getStatusCode());
-        $this->assertObjectHasAttribute('message', json_decode($response->getContent()));
+        $this->assertEquals('Se ha cerrado la sesion del usuario', json_decode($response->getContent())->message);
     }
 }

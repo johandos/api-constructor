@@ -32,6 +32,14 @@ class VehiculosTest extends TestCase
             ->assertStatus(200);
     }
 
+    public function test_can_list_vehicles_with_rol()
+    {
+        Vehicles::factory()->count(5)->create();
+
+        $this->get(route('vehiculos.index'))
+            ->assertStatus(200);
+    }
+
     public function test_can_search_vehicles()
     {
         $empresa = Companies::factory()->create();
